@@ -1,0 +1,242 @@
+---
+- name: Prepare servers and deploy RKE Kubernetes cluster
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Set internal IP fact for all nodes
+      set_fact:
+        node_ip: "{{ ansible_default_ipv4.address }}"
+
+- name: Configure RKE2 master nodes
+  hosts: k8s-master
+  become: yes
+
+  tasks:
+    - name: Create RKE2 configuration directory
+      file:
+        path: /etc/rancher/rke2
+        state: directory
+        mode: 0755
+
+    - name: Create RKE2 server configuration
+      copy:
+        content: |
+          write-kubeconfig-mode: "0644"
+          node-ip: {{ node_ip }}
+          tls-san:
+            - {{ node_ip }}
+            - {{ ansible_host }}
+          cni:
+            - calico
+          kubelet-arg:
+            - "authentication-token-webhook=true"
+            - "authorization-mode=Webhook"
+        dest: /etc/rancher/rke2/config.yaml
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install RKE2 server
+      shell: |
+        curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="server" sh -
+      args:
+        executable: /bin/bash
+      register: rke2_install
+
+    - name: Enable and start RKE2 server service
+      systemd:
+        name: rke2-server
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Wait for RKE2 API to be ready (увеличено время ожидания)
+      wait_for:
+        host: "{{ node_ip }}"
+        port: 6443
+        timeout: 300
+        delay: 10
+
+    - name: Wait for kubeconfig file
+      wait_for:
+        path: /etc/rancher/rke2/rke2.yaml
+        state: present
+        timeout: 120
+
+    - name: Set KUBECONFIG environment
+      shell: |
+        echo 'export KUBECONFIG=/etc/rancher/rke2/rke2.yaml' >> /etc/profile.d/rke2.sh
+        echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin' >> /etc/profile.d/rke2.sh
+        chmod 644 /etc/profile.d/rke2.sh
+        echo 'source <(kubectl completion bash)' >> ~/.bashrc
+      args:
+        executable: /bin/bash
+
+    - name: Verify RKE2 installation
+      shell: |
+        source /etc/profile.d/rke2.sh
+        /var/lib/rancher/rke2/bin/kubectl get nodes --kubeconfig=/etc/rancher/rke2/rke2.yaml
+      args:
+        executable: /bin/bash
+      register: kubectl_nodes
+      retries: 3
+      delay: 10
+      until: kubectl_nodes.rc == 0
+
+    - name: Display cluster nodes
+      debug:
+        var: kubectl_nodes.stdout
+
+    - name: Wait for node token to be created
+      wait_for:
+        path: /var/lib/rancher/rke2/server/node-token
+        state: present
+        timeout: 60
+
+    - name: Read node token from master
+      slurp:
+        src: /var/lib/rancher/rke2/server/node-token
+      register: node_token_content
+
+    # - name: Display node token (for debugging)
+    #   debug:
+    #     msg: "Node token: {{ node_token_content.content }}"
+
+    - name: Save node token to local file for worker nodes
+      copy:
+        content: "{{ node_token_content.content | b64decode }}"
+        dest: "{{ playbook_dir }}/.artifact/rke2_token.txt"
+        mode: 0644
+      delegate_to: localhost
+      become: no
+
+    - name: Save master IP to local file
+      copy:
+        content: "{{ node_ip }}"
+        dest: "{{ playbook_dir }}/.artifact/rke2_master_ip.txt"
+        mode: 0644
+      delegate_to: localhost
+      become: no
+
+    - name: Read config node from master
+      slurp:
+        src: /etc/rancher/rke2/rke2.yaml
+      register: config_file_content
+
+    - name: Save config file to local file
+      copy:
+        content: "{{ config_file_content.content | b64decode }}"
+        dest: "{{ playbook_dir }}/.artifact/config"
+        mode: 0644
+      delegate_to: localhost
+      become: no
+
+    - name: Save config file to local file
+      ansible.builtin.replace:
+        path: "{{ playbook_dir }}/.artifact/config"
+        regexp: 'https://127.0.0.1:6443'
+        replace: 'https://{{ ansible_host }}:6443'
+      delegate_to: localhost
+      become: no
+
+- name: Configure RKE2 worker nodes  
+  hosts: k8s-worker
+  become: yes
+
+  tasks:
+    - name: Read master IP from local file
+      local_action:
+        module: slurp
+        src: "{{ playbook_dir }}/.artifact/rke2_master_ip.txt"
+      register: master_ip_file
+      become: no
+
+    - name: Read cluster token from local file
+      local_action:
+        module: slurp
+        src: "{{ playbook_dir }}/.artifact/rke2_token.txt"
+      register: cluster_token_file
+      become: no
+
+    - name: Set master IP fact
+      set_fact:
+        master_ip: "{{ master_ip_file.content | b64decode | trim }}"
+
+    - name: Set cluster token fact
+      set_fact:
+        cluster_token: "{{ cluster_token_file.content | b64decode | trim }}"
+
+    - name: Create RKE2 configuration directory
+      file:
+        path: /etc/rancher/rke2
+        state: directory
+        mode: 0755
+
+    - name: Create RKE2 agent configuration
+      copy:
+        content: |
+          write-kubeconfig-mode: "0644"
+          server: https://{{ master_ip }}:9345
+          token: {{ cluster_token }}
+          node-ip: {{ node_ip }}
+          cni:
+            - calico
+        dest: /etc/rancher/rke2/config.yaml
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install RKE2 agent
+      shell: |
+        curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+      args:
+        executable: /bin/bash
+      register: rke2_install
+
+    - name: Enable and start RKE2 agent service
+      systemd:
+        name: rke2-agent
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+# - name: Configure label worker nodes  
+#   hosts: k8s-master
+#   become: yes
+#   tasks:
+#     - name: add labels worker nodes
+#       shell: |
+#         sleep 50
+#         kubectl label nodes k8s-worker-01 node-role.kubernetes.io/worker=true
+#         kubectl label nodes k8s-worker-02 node-role.kubernetes.io/worker=true
+#         kubectl label nodes k8s-worker-03 node-role.kubernetes.io/worker=true
+#         kubectl label nodes k8s-worker-04 node-role.kubernetes.io/worker=true
+#         kubectl label nodes k8s-worker-05 node-role.kubernetes.io/worker=true
+#       args:
+#         executable: /bin/bash
+#       ignore_errors: yes
+#       failed_when: false
+#       changed_when: false
+
+
+# # - name: Post-task
+# #   hosts: localhost
+# #   connection: local
+# #   tasks:
+# #     - name: add labels worker nodes
+# #       block:
+# #         - name: run command
+#           # shell: |
+#           #   export KUBECONFIG=/home/aleksandrov_sp/.kube/config
+#           #   kubectl label nodes k8s-worker-01 node-role.kubernetes.io/worker=true --overwrite
+#           #   kubectl label nodes k8s-worker-02 node-role.kubernetes.io/worker=true --overwrite
+#           #   kubectl label nodes k8s-worker-03 node-role.kubernetes.io/worker=true --overwrite
+#           #   kubectl label nodes k8s-worker-04 node-role.kubernetes.io/worker=true --overwrite
+#           #   kubectl label nodes k8s-worker-05 node-role.kubernetes.io/worker=true --overwrite
+#           # args:
+#           #   executable: /bin/bash
+#           # ignore_errors: yes
+#           # failed_when: false
+#           # changed_when: false

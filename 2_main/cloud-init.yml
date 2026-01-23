@@ -1,0 +1,42 @@
+#cloud-config
+users:
+  - name: ansible-user
+    groups: 
+      - sudo
+      - Kubernetes
+      - containerd
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${vms_ssh_root_key}
+chpasswd:
+  list: |
+    root:${root_user_pass}
+package_update: true
+package_upgrade: false
+packages:
+  - python3
+  - python3-pip
+  - nano
+  - containerd
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gpg
+  - gnupg
+  - wget
+
+runcmd:
+  - sysctl -w net.ipv4.ip_forward=1
+  - echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+  - mkdir -p -m 755 /etc/apt/keyrings
+  - curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  - echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+  - swapoff -a
+  - apt-get update
+  - sleep 15
+  - apt install -y kubeadm kubelet kubectl
+  - systemctl enable containerd
+  - systemctl start containerd
+  - systemctl enable --now kubelet
+  - echo 'source <(kubectl completion bash)' >> ~/.bashrc

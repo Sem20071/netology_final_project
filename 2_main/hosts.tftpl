@@ -1,0 +1,21 @@
+[k8s-master]
+%{ for vm_name, vm in vms ~}
+%{ if vm_config_map[vm_name].role == "master" ~}
+${vm.name} ansible_host=${vm.network_interface.0.nat_ip_address} internal_ip=${vm.network_interface.0.ip_address} node_role=master
+%{ endif ~}
+%{ endfor ~}
+
+[k8s-worker]
+%{ for vm_name, vm in vms ~}
+%{ if vm_config_map[vm_name].role == "worker" ~}
+${vm.name} ansible_host=${vm.network_interface.0.nat_ip_address} internal_ip=${vm.network_interface.0.ip_address} node_role=worker
+%{ endif ~}
+%{ endfor ~}
+
+[k8s-cluster:children]
+k8s-master
+k8s-worker
+[all:vars]
+ansible_user=ansible-user
+ansible_ssh_private_key_file= ~/.ssh/id_ed25519
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

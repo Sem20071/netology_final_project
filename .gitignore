@@ -1,0 +1,20 @@
+# Local .terraform directories and files
+**/.terraform/*
+.terraform*
+!.terraformrc
+
+2_s3_bucket
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# own secret vars store.
+personal.auto.tfvars
+cmd_kube
+hosts.ini
+rke2_master_ip.txt
+rke2_token.txt
+authorized_key.json
+export-credentials
+token.hcl
+config

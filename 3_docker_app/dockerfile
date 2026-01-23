@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Устанавливаем рабочую директорию
+WORKDIR /usr/share/nginx/html
+
+# Удаляем дефолтную страницу nginx
+RUN rm -rf ./*
+
+# Копируем все статические файлы
+COPY ./index.html .
+
+# Настраиваем конфигурацию nginx
+#COPY nginx-custom.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
