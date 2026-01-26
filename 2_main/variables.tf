@@ -23,7 +23,7 @@ variable "vpc_name" {
 
 variable "image_name" {
   type        = string 
-  default     = "ubuntu-2004-lts-oslogin"
+  default     = "ubuntu-2404-lts-oslogin" #ubuntu-2004-lts-oslogin
   description = "release name"
 }
 
