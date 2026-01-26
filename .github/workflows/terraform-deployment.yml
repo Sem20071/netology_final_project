@@ -39,15 +39,29 @@ jobs:
       #AWS_EC2_METADATA_DISABLED: "true"
 
     steps:    
-
-
     - name: Save SSH key to file
       run: |
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-        echo $ssh_root_key > ~/.ssh/id_ed25519
+        
+        cat << 'EOF' > ~/.ssh/id_ed25519
+        ${{ secrets.SSH_PRIVATE_KEY }}
+        EOF
+        
         chmod 600 ~/.ssh/id_ed25519
-        echo "" >> ~/.ssh/id_ed25519
+        
+        if ! head -n 1 ~/.ssh/id_ed25519 | grep -q "PRIVATE KEY"; then
+          echo "ERROR: Invalid SSH private key format"
+          exit 1
+        fi
+
+    # - name: Save SSH key to file
+    #   run: |
+    #     mkdir -p ~/.ssh
+    #     chmod 700 ~/.ssh
+    #     echo $ssh_root_key > ~/.ssh/id_ed25519
+    #     chmod 600 ~/.ssh/id_ed25519
+    #     echo "" >> ~/.ssh/id_ed25519
 
     - name: Checkout
       uses: actions/checkout@v3
