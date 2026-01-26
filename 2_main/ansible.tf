@@ -16,10 +16,11 @@ resource "null_resource" "ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 60 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${path.module}/ansible-config-k8s-cluster/hosts.ini ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml -k -u ansible-user --extra-vars 'ansible_ssh_pass=$TF_VAR_root_user_pass ansible_become_pass=$TF_VAR_root_user_pass'"
+    command = "sleep 60 && ansible-playbook -i ${path.module}/ansible-config-k8s-cluster/hosts.ini ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml -k -u ansible-user --extra-vars 'ansible_ssh_pass=${var.root_user_pass} ansible_become_pass=${var.root_user_pass}'"
     
     environment = {
       ANSIBLE_FORCE_COLOR = "true"
+      ANSIBLE_HOST_KEY_CHECKING= "False"
     }
   }
 
