@@ -46,8 +46,25 @@ jobs:
       with:
         terraform_version: "1.8.4"
         
-    - name: Terraform Init
-      run: terraform -chdir=./2_main init
+    #- name: Terraform Init
+    #  run: terraform -chdir=./2_main init
+    - name: Terraform Init (explicit credentials)
+      run: |
+        echo "Initializing Terraform with explicit backend config..."
+        
+        terraform -chdir=./2_main init -input=false -reconfigure \
+          -backend-config="access_key=${{ secrets.YC_STORAGE_ACCESS_KEY }}" \
+          -backend-config="secret_key=${{ secrets.YC_STORAGE_SECRET_KEY }}" \
+          -backend-config="endpoints={s3=\"https://storage.yandexcloud.net\"}" \
+          -backend-config="region=ru-central1" \
+          -backend-config="bucket=private-tfstate" \
+          -backend-config="key=terraform.tfstate" \
+          -backend-config="skip_region_validation=true" \
+          -backend-config="skip_credentials_validation=true" \
+          -backend-config="skip_requesting_account_id=true" \
+          -backend-config="skip_s3_checksum=true" \
+          -backend-config="skip_metadata_api_check=true" \
+          -backend-config="force_path_style=true"
 
     - name: Terraform Validate
       run: terraform -chdir=./2_main validate
