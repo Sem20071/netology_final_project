@@ -24,7 +24,7 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     environment: TF_VAR
-    
+
     env:
       TOKEN: ${{ secrets.YC_TOKEN }}
       AWS_ENDPOINT_URL_S3: "https://storage.yandexcloud.net"
@@ -46,7 +46,7 @@ jobs:
         terraform_version: "1.8.4"
 
     - name: Terraform Init
-      run: terraform -chdir=./2_main init -reconfigure
+      run: terraform -chdir=./2_main init
 
     - name: Terraform Validate
       run: terraform -chdir=./2_main validate
