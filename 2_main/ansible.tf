@@ -16,14 +16,8 @@ resource "null_resource" "ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = <<EOT
-      sleep 60 && \
-      ansible-playbook \
-      -i ${path.module}/ansible-config-k8s-cluster/hosts.ini \
-      ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml
-
-    EOT
-    
+    command = "sleep 60 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${path.module}/ansible-config-k8s-cluster/hosts.ini ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml"
+        
     environment = {
       ANSIBLE_FORCE_COLOR = "true"
       ANSIBLE_HOST_KEY_CHECKING = "False"
