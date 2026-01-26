@@ -56,7 +56,6 @@ variable "vm_platform_id" {
 
 variable "vms_ssh_root_key" {                                                             
   type = string
-  default = "ssh = "
   description = "ssh-keygen -t ed25519"
   sensitive   = true
   }
