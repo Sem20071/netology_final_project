@@ -9,9 +9,11 @@ users:
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     ssh_authorized_keys:
       - ${vms_ssh_root_key}
+    lock_passwd: false
 chpasswd:
   list: |
     root:${root_user_pass}
+  expire: false
 package_update: true
 package_upgrade: false
 packages:
