@@ -36,6 +36,8 @@ jobs:
       AWS_EC2_METADATA_DISABLED: "true"
 
     steps:
+
+    
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -43,7 +45,16 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: "1.8.4"
-
+        
+    - name: Debug - Check environment variables
+      run: |
+        echo "=== Environment Variables ==="
+        echo "AWS_ACCESS_KEY_ID length: ${#AWS_ACCESS_KEY_ID}"
+        echo "AWS_SECRET_ACCESS_KEY length: ${#AWS_SECRET_ACCESS_KEY}"
+        echo "AWS_ENDPOINT_URL_S3: $AWS_ENDPOINT_URL_S3"
+        echo "AWS_EC2_METADATA_DISABLED: $AWS_EC2_METADATA_DISABLED"
+        echo "============================"
+        
     - name: Terraform Init
       run: terraform -chdir=./2_main init
 
