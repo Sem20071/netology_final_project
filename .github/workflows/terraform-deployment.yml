@@ -69,7 +69,7 @@ jobs:
 
     - name: Terraform Apply (Manual Trigger)
       if: github.event_name == 'workflow_dispatch' && github.event.inputs.apply == 'true'
-      run: terraform -chdir=./main apply -input=false -auto-approve tfplan
+      run: terraform -chdir=./2_main apply -input=false -auto-approve tfplan
 ###
     - name: Copy kubeconfig
       run: |
