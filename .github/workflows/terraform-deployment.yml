@@ -1,89 +1,85 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Terraform deployment
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
     paths:
       - '2_main/*'
   
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       destroy:
-        description: 'Set to "true" to destroy infrastructure'
+        description: 'Destroy infrastructure'
+        type: boolean
+        default: false
         required: false
-        default: 'false'
       apply:
-        description: 'Set to "true" to apply infrastructure changes'
+        description: 'Apply infrastructure changes'
+        type: boolean
+        default: false
         required: false
-        default: 'false'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
 
     env:
-      ###TOKEN: ${{ secrets.TF_VAR_IAM_TOKEN }}
-      #CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
-      #FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-      #MY_IP: ${{ secrets.YC_MYIP }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_VMS_SSH_ROOT_KEY }}
-      ###TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-      ###TF_VAR_my_ip: ${{ secrets.YC_MYIP }}
       TF_VAR_cloud_id: ${{ secrets.TF_VAR_CLOUD_ID }}
       TF_VAR_folder_id: ${{ secrets.TF_VAR_FOLDER_ID }}
-      TF_VAR_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
+      TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
     - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2  # Используйте v2
       with:
         terraform_version: "1.8.4"
 
     - name: Terraform Init
-      run: terraform -chdir=./2_main init 
-      
-    - name: Terraform Format and Validate
-      run: terraform -chdir=./2_main validate 
+      run: terraform -chdir=./2_main init -input=false
 
+    - name: Terraform Validate
+      run: terraform -chdir=./2_main validate
+      
     - name: Terraform Plan
+      id: plan
       run: |
-        terraform -chdir=./2_main plan -input=false -out=tfplan \
-        -var="token=${{ secrets.TF_VAR_IAM_TOKEN }}"
-       
-    - name: Terraform Apply (Automatic Trigger)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        terraform -chdir=./2_main plan -input=false -out=tfplan
+      continue-on-error: true  # Позволяет workflow продолжаться даже при ошибке plan
+
+    - name: Terraform Apply (Push Trigger)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.plan.outcome == 'success'
       run: terraform -chdir=./2_main apply -input=false -auto-approve tfplan
 
     - name: Terraform Apply (Manual Trigger)
-      if: github.event_name == 'workflow_dispatch' && github.event.inputs.apply == 'true'
+      if: github.event_name == 'workflow_dispatch' && inputs.apply == 'true' && steps.plan.outcome == 'success'
       run: terraform -chdir=./2_main apply -input=false -auto-approve tfplan
-###
-    - name: Copy kubeconfig
-      run: |
-        mkdir -p ./kubeconfig
-        cp ./2_main/ansible-config-k8s-cluster/.artifact/config ./kubeconfig/config || echo "kubeconfig not found"
-      continue-on-error: true
-
-    - name: Upload kube config file
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: config
-        path: ./kubeconfig/config
 
     - name: Terraform Destroy (Manual Trigger)
-      if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true'
+      if: github.event_name == 'workflow_dispatch' && inputs.destroy == 'true'
       run: terraform -chdir=./2_main destroy -auto-approve
+
+    - name: Check for kubeconfig
+      id: check_kubeconfig
+      run: |
+        if [ -f "./2_main/kubeconfig/config" ]; then
+          echo "kubeconfig found"
+          echo "::set-output name=exists::true"
+        else
+          echo "kubeconfig not found"
+          echo "::set-output name=exists::false"
+        fi
+
+    - name: Upload kubeconfig artifact
+      if: steps.check_kubeconfig.outputs.exists == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: kubeconfig
+        path: ./2_main/kubeconfig/config
+        retention-days: 1
