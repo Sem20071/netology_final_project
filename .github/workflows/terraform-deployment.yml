@@ -40,10 +40,10 @@ jobs:
 
     steps:    
     - name: Save SSH key to file
-        run: |
-          mkdir -p ~/.ssh
-          printenv TF_VAR_vms_ssh_root_key > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+      run: |
+        mkdir -p ~/.ssh
+        printenv TF_VAR_vms_ssh_root_key > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
 
     - name: Checkout
       uses: actions/checkout@v3
