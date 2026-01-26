@@ -57,22 +57,19 @@ variable "vm_platform_id" {
 variable "vms_ssh_root_key" {                                                             
   type = string
   description = "ssh-keygen -t ed25519"
-  sensitive   = true
-  default     = ""
+  sensitive   = false
   }
 
 variable "root_user_pass" {                                                             
   type = string
   description = "root user password"
   sensitive   = true
-  default     = ""
   }
 
 variable "iam_token" {                                                             
   type = string
   description = "iam token"
   sensitive   = true
-  default     = ""
   }
 
 variable "each_vm" {
