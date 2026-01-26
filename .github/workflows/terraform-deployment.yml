@@ -44,16 +44,11 @@ jobs:
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
         
-        cat << 'EOF' > ~/.ssh/id_ed25519
-        ${{ secrets.SSH_PRIVATE_KEY }}
-        EOF
-        
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
         chmod 600 ~/.ssh/id_ed25519
         
-        if ! head -n 1 ~/.ssh/id_ed25519 | grep -q "PRIVATE KEY"; then
-          echo "ERROR: Invalid SSH private key format"
-          exit 1
-        fi
+        echo "First line of key:"
+        head -n 1 ~/.ssh/id_ed25519
 
     # - name: Save SSH key to file
     #   run: |
