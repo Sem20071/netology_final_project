@@ -77,7 +77,7 @@ resource "null_resource" "simple_token" {
       echo "Getting IAM token..."
       yc iam create-token --profile terraform-sa-profile > token.hcl
       
-      if [ -f .env ]; then
+      if [ -f .terraform.env ]; then
         # Удаляем старую строку с TF_VAR_iam_token если есть
         grep -v "^TF_VAR_iam_token=" .terraform.env > .env.tmp && mv .env.tmp .env
       fi

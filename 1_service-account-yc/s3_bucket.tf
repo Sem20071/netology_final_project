@@ -57,6 +57,11 @@ resource "yandex_storage_bucket" "private-tfstate" {
       }
     }
   }
+  depends_on = [local_sensitive_file.service-account-key,
+                yandex_resourcemanager_folder_iam_member.k8s-roles,
+                yandex_iam_service_account_key.terraform-sa-key,
+                yandex_iam_service_account_static_access_key.sa-static-key,
+                local_file.aws_credentials]
 }
 
 
