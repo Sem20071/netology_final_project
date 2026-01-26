@@ -34,7 +34,7 @@ jobs:
       TF_VAR_cloud_id: ${{ secrets.TF_VAR_CLOUD_ID }}
       TF_VAR_folder_id: ${{ secrets.TF_VAR_FOLDER_ID }}
       TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
-      TF_VAR_ROOT_USER_PASS: ${{ secrets.TF_VAR_ROOT_USER_PASS }}
+      TF_VAR_root_user_pass: ${{ secrets.TF_VAR_ROOT_USER_PASS }}
       AWS_EC2_METADATA_DISABLED: "true"
 
     steps:    
