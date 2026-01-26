@@ -50,7 +50,49 @@ jobs:
         TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
         AWS_EC2_METADATA_DISABLED: "true"
       run: echo "Секрет загружен"
-    
+      
+    - name: Verify secrets exist
+      id: check-secrets
+      run: |
+        echo "=== Checking GitHub Secrets ==="
+        
+        # Проверяем каждый секрет
+        secrets=(
+          "AWS_ACCESS_KEY_ID"
+          "AWS_SECRET_ACCESS_KEY"
+          "YC_STORAGE_ACCESS_KEY"
+          "YC_STORAGE_SECRET_KEY"
+          "TF_VAR_VMS_SSH_ROOT_KEY"
+          "TF_VAR_CLOUD_ID"
+          "TF_VAR_FOLDER_ID"
+          "TF_VAR_IAM_TOKEN"
+        )
+        
+        all_good=true
+        for secret in "${secrets[@]}"; do
+          if [ -z "${!secret}" ] && [ -z "${{ secrets[secret] }}" ]; then
+            echo "❌ MISSING: $secret"
+            all_good=false
+          else
+            echo "✅ OK: $secret"
+          fi
+        done
+        
+        if [ "$all_good" = false ]; then
+          echo ""
+          echo "=== INSTRUCTIONS ==="
+          echo "Please add missing secrets to GitHub:"
+          echo "1. Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
+          echo "2. Click 'New repository secret'"
+          echo "3. Add YC_STORAGE_ACCESS_KEY and YC_STORAGE_SECRET_KEY"
+          echo ""
+          echo "To get Yandex Object Storage keys:"
+          echo "yc iam access-key create --service-account-name terraform-state-sa"
+          exit 1
+        fi
+        
+        echo "✅ All required secrets are available"
+
     - name: Checkout
       uses: actions/checkout@v3
 
