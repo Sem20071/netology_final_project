@@ -43,12 +43,16 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-        
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+        printf '%s\n' "$ssh_root_key" > ~/.ssh/id_ed25519
+        sed -i -e '/^$/d' ~/.ssh/id_ed25519
         chmod 600 ~/.ssh/id_ed25519
-        
-        echo "First line of key:"
-        head -n 1 ~/.ssh/id_ed25519
+    
+        # Проверяем, что файл не пустой
+        if [ ! -s ~/.ssh/id_ed25519 ]; then
+          echo "ERROR: SSH key file is empty!"
+          exit 1
+        fi
+
 
     # - name: Save SSH key to file
     #   run: |
