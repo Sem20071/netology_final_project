@@ -43,10 +43,8 @@ jobs:
 
     - name: Save SSH key to file
       run: |
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        echo $TF_VAR_ssh_root_key > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
+        echo $TF_VAR_ssh_root_key > ./.artifact/id_ed25519
+        chmod 600 ./.artifact/id_ed25519
         echo "=== Проверка ключа ==="
         head -n 1 ~/.ssh/id_ed25519
         eval "$(ssh-agent -s)"
