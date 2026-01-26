@@ -23,7 +23,8 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-
+    environment: TF_VAR
+    
     env:
       TOKEN: ${{ secrets.YC_TOKEN }}
       AWS_ENDPOINT_URL_S3: "https://storage.yandexcloud.net"
@@ -43,43 +44,8 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: "1.8.4"
-    - name: Validate environment variables
-      run: |
-        # Проверяем критически важные переменные
-        required_vars=(
-          "AWS_ACCESS_KEY_ID"
-          "AWS_SECRET_ACCESS_KEY"
-          "TF_VAR_cloud_id"
-          "TF_VAR_folder_id"
-        )
-        
-        missing_vars=()
-        for var in "${required_vars[@]}"; do
-          if [ -z "${!var}" ]; then
-            missing_vars+=("$var")
-          fi
-        done
-        
-        if [ ${#missing_vars[@]} -ne 0 ]; then
-          echo "Error: Missing required environment variables:"
-          printf '%s\n' "${missing_vars[@]}"
-          echo "Please check your GitHub repository secrets."
-          exit 1
-        fi
-    
-        echo "All required environment variables are set."    
-        
+
     - name: Terraform Init
-      #env:
-      #  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #  TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
-      #  TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_VMS_SSH_ROOT_KEY }}
-      #  TF_VAR_cloud_id: ${{ secrets.TF_VAR_CLOUD_ID }}
-      #  TF_VAR_folder_id: ${{ secrets.TF_VAR_FOLDER_ID }}
-      #  AWS_ENDPOINT_URL_S3: "https://storage.yandexcloud.net"
-      #  AWS_REGION: "ru-central1"
-      #  AWS_EC2_METADATA_DISABLED: "true"
       run: terraform -chdir=./2_main init -reconfigure
 
     - name: Terraform Validate
