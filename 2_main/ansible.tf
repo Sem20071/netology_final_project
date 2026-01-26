@@ -27,7 +27,6 @@ resource "null_resource" "ansible_provisioner" {
     environment = {
       ANSIBLE_FORCE_COLOR = "true"
       ANSIBLE_HOST_KEY_CHECKING = "False"
-      ANSIBLE_SSH_PASS = var.root_user_pass
     }
   }
 
