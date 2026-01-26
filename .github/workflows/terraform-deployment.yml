@@ -31,6 +31,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_vms_ssh_root_key: ${{ secrets.TF_VAR_VMS_SSH_ROOT_KEY }}
+      TF_VAR_ssh_root_key: ${{ secrets.TF_VAR_ssh_private_key }}
       TF_VAR_cloud_id: ${{ secrets.TF_VAR_CLOUD_ID }}
       TF_VAR_folder_id: ${{ secrets.TF_VAR_FOLDER_ID }}
       TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
@@ -38,6 +39,12 @@ jobs:
       #AWS_EC2_METADATA_DISABLED: "true"
 
     steps:    
+    - name: Save SSH key to file
+        run: |
+          mkdir -p ~/.ssh
+          printenv TF_VAR_vms_ssh_root_key > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -45,6 +52,8 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: "1.8.4"
+    
+    - 
 
     - name: Terraform Init
       run: terraform -chdir=./2_main init

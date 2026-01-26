@@ -20,11 +20,8 @@ resource "null_resource" "ansible_provisioner" {
       sleep 60 && \
       ansible-playbook \
       -i ${path.module}/ansible-config-k8s-cluster/hosts.ini \
-      ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml \
-      -u ansible-user \
-      -k \
-      --extra-vars "ansible_ssh_pass='${var.root_user_pass}' ansible_become_pass='${var.root_user_pass}'" \
-      -e 'ansible_ssh_common_args="-o PreferredAuthentications=password -o PubkeyAuthentication=no"'
+      ${path.module}/ansible-config-k8s-cluster/k8s-cluster-config.yaml
+
     EOT
     
     environment = {
