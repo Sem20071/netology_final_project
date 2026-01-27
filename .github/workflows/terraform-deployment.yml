@@ -26,8 +26,6 @@ jobs:
     environment: TF_VAR
 
     env:
-      #TOKEN: ${{ secrets.YC_TOKEN }}
-     # AWS_ENDPOINT_URL_S3: "https://storage.yandexcloud.net"
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_vms_ssh_root_key: ${{ secrets.TF_VAR_VMS_SSH_ROOT_KEY }}
@@ -36,7 +34,6 @@ jobs:
       TF_VAR_folder_id: ${{ secrets.TF_VAR_FOLDER_ID }}
       TF_VAR_iam_token: ${{ secrets.TF_VAR_IAM_TOKEN }}
       TF_VAR_root_user_pass: ${{ secrets.TF_VAR_ROOT_USER_PASS }}
-      #AWS_EC2_METADATA_DISABLED: "true"
 
     steps:    
     - name: Save SSH key to file
@@ -52,15 +49,6 @@ jobs:
           echo "ERROR: SSH key file is empty!"
           exit 1
         fi
-
-
-    # - name: Save SSH key to file
-    #   run: |
-    #     mkdir -p ~/.ssh
-    #     chmod 700 ~/.ssh
-    #     echo $ssh_root_key > ~/.ssh/id_ed25519
-    #     chmod 600 ~/.ssh/id_ed25519
-    #     echo "" >> ~/.ssh/id_ed25519
 
     - name: Checkout
       uses: actions/checkout@v3
