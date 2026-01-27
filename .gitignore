@@ -2,8 +2,7 @@
 **/.terraform/*
 .terraform*
 !.terraformrc
-
-2_s3_bucket
+kube-prometheus
 # .tfstate files
 *.tfstate
 *.tfstate.*
@@ -15,6 +14,5 @@ hosts.ini
 rke2_master_ip.txt
 rke2_token.txt
 authorized_key.json
-export-credentials
 token.hcl
 config
