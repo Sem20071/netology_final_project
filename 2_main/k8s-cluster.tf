@@ -1,7 +1,7 @@
 
-data "yandex_compute_image" "ubuntu" {
-  family = var.image_name     
-}
+# data "yandex_compute_image" "ubuntu" {
+#   family = var.image_name     
+# }
 
 resource "yandex_compute_instance" "vms" {            
   for_each = { for k in var.each_vm : k.vm_name => k }
@@ -18,7 +18,7 @@ resource "yandex_compute_instance" "vms" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu.image_id
+      image_id = var.image_id #data.yandex_compute_image.ubuntu.image_id
       type = "network-hdd"
       size = each.value.disk_volume
     }

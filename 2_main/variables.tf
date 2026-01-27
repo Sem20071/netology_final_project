@@ -21,10 +21,10 @@ variable "vpc_name" {
   description = "VPC network&subnet name"
 }
 
-variable "image_name" {
+variable "image_id" {
   type        = string 
-  default     = "ubuntu-2404-lts-oslogin" #ubuntu-2004-lts-oslogin
-  description = "release name"
+  default     = "fd8lcd9f54ldmonh1d72" #ubuntu-2004-lts-oslogin
+  description = "ubuntu-2404-lts-oslogin"
 }
 
 variable "each_subnet" {
