@@ -58,7 +58,7 @@ resource "local_sensitive_file" "service-account-key" {
   file_permission = "0600"
 }
 
-  # Локальный provisioner для получения IAM-токена
+# Локальный provisioner для получения IAM-токена
 resource "null_resource" "simple_token" {
   depends_on = [local_sensitive_file.service-account-key,
                 yandex_resourcemanager_folder_iam_member.k8s-roles,
@@ -92,5 +92,4 @@ resource "null_resource" "simple_token" {
     interpreter = ["bash", "-c"]
     on_failure = fail
   }
-
 }
