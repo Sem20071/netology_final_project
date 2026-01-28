@@ -25,6 +25,7 @@ resource "yandex_compute_instance" "vms" {
   network_interface {
     subnet_id          = yandex_vpc_subnet.subnets[each.value.subnet].id
     nat                = true
+    security_group_ids = [yandex_vpc_security_group.public.id]
   }
   
   metadata = {
