@@ -29,13 +29,12 @@ resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
 resource "local_file" "aws_credentials" {
   filename = "${path.module}/.terraform.env"
   content  = <<-EOT
-AWS_ACCESS_KEY_ID=${yandex_iam_service_account_static_access_key.sa-static-key.access_key}
-AWS_SECRET_ACCESS_KEY=${yandex_iam_service_account_static_access_key.sa-static-key.secret_key}
-TF_VAR_cloud_id=${var.cloud_id}
-TF_VAR_folder_id=${var.folder_id}
-TF_VAR_root_user_pass=${var.root_user_pass}
-TF_VAR_vms_ssh_root_key="${var.vms_ssh_root_key}"
-
+export AWS_ACCESS_KEY_ID=${yandex_iam_service_account_static_access_key.sa-static-key.access_key}
+export AWS_SECRET_ACCESS_KEY=${yandex_iam_service_account_static_access_key.sa-static-key.secret_key}
+export TF_VAR_cloud_id=${var.cloud_id}
+export TF_VAR_folder_id=${var.folder_id}
+export TF_VAR_root_user_pass=${var.root_user_pass}
+export TF_VAR_vms_ssh_root_key="${var.vms_ssh_root_key}"
   EOT
 }
 
@@ -83,7 +82,7 @@ resource "null_resource" "simple_token" {
       fi
       
       # Добавляем новые переменные
-      echo "TF_VAR_iam_token=$(cat token.hcl)" >> .terraform.env
+      echo "export TF_VAR_iam_token=$(cat token.hcl)" >> .terraform.env
       
       rm -f token.hcl
 

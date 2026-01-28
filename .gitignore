@@ -7,6 +7,7 @@ kube-prometheus
 *.tfstate
 *.tfstate.*
 *.env
+
 # own secret vars store.
 personal.auto.tfvars
 cmd_kube
