@@ -101,7 +101,8 @@ GitHub репозиторий с конфигурационными файлам
 Проверяем DockerHub регистри, видим что новый образ с тэгом v1.0.1 а так же тот же образ но с тэго latest загружены
 ![Проверяем DockerHub регистри, видим что новый образ с тэгом v1.0.1 а так же тот же образ но с тэго latest загружены](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-5.png)
 
-!Открываем нашу тестовую страницу и видим изменения](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-6.png)
+Открываем нашу тестовую страницу и видим изменения
+![Открываем нашу тестовую страницу и видим изменения](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-6.png)
 
 ![Проверяем версию образа в deployment и видим что версия изменена на v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-7.png)
 
