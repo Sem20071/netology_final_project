@@ -8,16 +8,15 @@ on:
   
   workflow_dispatch:
     inputs:
-      destroy:
-        description: 'Destroy infrastructure'
-        type: boolean
-        default: false
-        required: false
-      apply:
-        description: 'Apply infrastructure changes'
-        type: boolean
-        default: false
-        required: false
+      action:
+        description: 'Terraform action to perform'
+        type: choice
+        options:
+          - apply
+          - destroy
+          - plan-only
+        default: 'plan-only'
+        required: true
 
 jobs:
   terraform:
@@ -68,25 +67,31 @@ jobs:
       id: plan
       run: |
         terraform -chdir=./2_main plan -input=false -out=tfplan
-      continue-on-error: false
 
-    - name: Terraform Apply (Push Trigger)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: terraform -chdir=./2_main apply -input=false -auto-approve tfplan
-
-    - name: Terraform Apply (Manual Trigger)
-      if: github.event_name == 'workflow_dispatch' && inputs.apply == 'true'
-      run: terraform -chdir=./2_main apply -input=false -auto-approve tfplan
-
-    - name: Terraform Destroy (Manual Trigger)
-      if: github.event_name == 'workflow_dispatch' && inputs.destroy == 'true'
-      run: terraform -chdir=./2_main destroy -auto-approve
-
-    - name: Terraform Plan Output
-      if: github.event_name == 'workflow_dispatch' && inputs.apply == 'false' && inputs.destroy == 'false'
+    - name: Execute Terraform Action
       run: |
-        echo "=== Terraform Plan Output ==="
-        terraform -chdir=./2_main show -no-color tfplan
+        cd ./2_main
+        
+        if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "🚀 Auto-applying changes from push to main..."
+          terraform apply -input=false -auto-approve tfplan
+        
+        elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          case "${{ inputs.action }}" in
+            "apply")
+              echo "🚀 Manually applying changes..."
+              terraform apply -input=false -auto-approve tfplan
+              ;;
+            "destroy")
+              echo "💥 Destroying infrastructure..."
+              terraform destroy -auto-approve
+              ;;
+            "plan-only")
+              echo "📋 Showing plan only..."
+              terraform show -no-color tfplan
+              ;;
+          esac
+        fi
 
     - name: Check for kubeconfig
       id: check_kubeconfig
