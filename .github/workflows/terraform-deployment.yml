@@ -73,21 +73,21 @@ jobs:
         cd ./2_main
         
         if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
-          echo "🚀 Auto-applying changes from push to main..."
+          echo "Auto-applying changes from push to main."
           terraform apply -input=false -auto-approve tfplan
         
         elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           case "${{ inputs.action }}" in
             "apply")
-              echo "🚀 Manually applying changes..."
+              echo "Manually applying changes."
               terraform apply -input=false -auto-approve tfplan
               ;;
             "destroy")
-              echo "💥 Destroying infrastructure..."
+              echo "Destroying infrastructure."
               terraform destroy -auto-approve
               ;;
             "plan-only")
-              echo "📋 Showing plan only..."
+              echo "Showing plan only."
               terraform show -no-color tfplan
               ;;
           esac
