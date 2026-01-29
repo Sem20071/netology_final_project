@@ -20,7 +20,7 @@ resource "yandex_vpc_security_group" "public" {
   ingress {
     protocol       = "TCP"
     port           = 30080
-    v4_cidr_blocks = ["0.0.0.0/0"] # Диапазоны IP для health checks Yandex ALB
+    v4_cidr_blocks = ["0.0.0.0/0"]
     description    = "Grafana health checks"
   }
 

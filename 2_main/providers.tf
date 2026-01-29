@@ -9,7 +9,6 @@ terraform {
   backend "s3" {
     endpoints = {
       s3 = "https://storage.yandexcloud.net"
-      # dynamodb = "https://docapi.serverless.yandexcloud.net/ru-central1/b1g7g5qur1nsh9pakjnj/etnfohjsoman0q61epn9"
     }
     bucket = "private-tfstate"
     region = "ru-central1"
@@ -19,7 +18,6 @@ terraform {
     skip_requesting_account_id  = true   
     skip_s3_checksum            = true
     use_path_style              = true
-    # dynamodb_table = "tfstate-lock"
   }
 }
 
@@ -28,5 +26,4 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.default_zone
   token     = var.iam_token 
-  #service_account_key_file = file("../1_service-account-yc/authorized_key.json")
 }
