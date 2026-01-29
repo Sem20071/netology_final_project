@@ -20,7 +20,7 @@ resource "yandex_compute_instance" "vms" {
   }
 
   scheduling_policy {
-    preemptible = true
+    preemptible = false
   }
   network_interface {
     subnet_id          = yandex_vpc_subnet.subnets[each.value.subnet].id

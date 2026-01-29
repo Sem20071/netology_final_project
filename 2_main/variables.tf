@@ -80,25 +80,25 @@ variable "each_vm" {
       cpu = 2,
       ram = 4,
       disk_volume = 20,
-      core_fraction = 50
+      core_fraction = 20
       role          = "master"
       subnet = "public-ru-central1-a"
     },
     {
       vm_name = "k8s-worker-01",
       cpu = 2,
-      ram = 4,
+      ram = 2,
       disk_volume = 20,
-      core_fraction = 50
+      core_fraction = 20
       role          = "worker"
       subnet = "public-ru-central1-a"
     },
     {
       vm_name = "k8s-worker-02",
       cpu = 2,
-      ram = 4,
+      ram = 2,
       disk_volume = 20,
-      core_fraction = 50
+      core_fraction = 20
       role          = "worker"
       subnet = "public-ru-central1-b"
     }

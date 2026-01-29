@@ -112,5 +112,5 @@ GitHub репозиторий с конфигурационными файлам
 3. [Репозиторий с конфигурацией ansible для настройки кластера k8s](https://github.com/Sem20071/netology_final_project/tree/main/2_main/ansible-config-k8s-cluster)
 4. [Репозиторий с Dockerfile тестового приложения](https://github.com/Sem20071/my-mini-app) и [ссылка на собранный docker image](https://hub.docker.com/repository/docker/aleksandrovsp/aleksandrov-my-miniapp/general)
 5. [Репозиторий с конфигурацией Kubernetes кластера](https://github.com/Sem20071/netology_final_project/tree/main/2_main)
-6. [Ссылка на тестовое приложение]() и [веб интерфейс Grafana с данными доступа]()
+6. [Ссылка на тестовое приложение](http://158.160.220.240/) и [веб интерфейс Grafana с данными доступа](http://158.160.220.240/grafana/login)
 7. Все репозитории с исходниками распологаются в GitHub
