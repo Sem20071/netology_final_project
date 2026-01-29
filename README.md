@@ -12,9 +12,9 @@
 
 ### Этапы выполнения:
 ## 1. Создание облачной инфраструктуры.
-Подготовлена [terraform конфигурация](https://github.com/Sem20071/netology_final_project/tree/main/1_service-account-yc) для создания сервисного аккаунта и s3 bucket в YC и KMS ключа для шифрования бакета.
+Подготовлена [terraform конфигурация](https://github.com/Sem20071/netology_final_project/tree/main/1_service-account-yc) для создания сервисного аккаунта и s3 bucket в YC и KMS ключа для шифрования содержимого bucket.
 * Все файлы с чувствительными данными добавлены в .gitignore
-* S3 Bucket создается и шифруется созданым ключем.
+* S3 Bucket создается и шифруется созданным ключом.
   ![Bucket создан](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-1-1.png)
   ![Файл terraform.tfstate зашифрован](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-1-2.png)
 * Команды `terraform destroy` и `terraform apply` выполняются без дополнительных ручных действий.
@@ -27,7 +27,7 @@
 * Настраиваться сетевая инфраструктура. Создаются сеть и подсети.
 * Создаётся требуемое количество виртуальных машин.
 * Производится настройка виртуальных машин согласно [cloud-init конфигурации](https://github.com/Sem20071/netology_final_project/blob/main/2_main/cloud-init.yml)
-* Про помощи Ansible настраивается kubernetes на всех машинах кластера.
+* При помощи Ansible настраивается kubernetes на всех машинах кластера.
 ![Результат выполнения terraform apply.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-1.png)
 ![Результат выполнения terraform apply.2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-2.png)
 ![Результат выполнения terraform apply.2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-3.png)
@@ -42,22 +42,22 @@
    ![Результат выполнения docker build -t aleksandrovsp/aleksandrov-my-miniapp:1.0.0 .](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-3-1.png)
    ![Результат выполнения docker push aleksandrovsp/aleksandrov-my-miniapp:1.0.0](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-3-2.png)
 
-## 4. Подготовка cистемы мониторинга и деплой приложения.
+## 4. Подготовка системы мониторинга и деплой приложения.
 1. Подготовлен [манифест](https://github.com/Sem20071/my-mini-app/blob/main/deployment-my-app.yaml) для разворачивания тестового приложения
-2. Подготовлен [манифест](https://github.com/Sem20071/my-mini-app/blob/main/grafana-config.yaml) для внесения изменений в конфигурациию мониторинг кластера. При разворачивнаии воспользовался пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus)
-3. Подготовлен [bash скрипт](https://github.com/Sem20071/my-mini-app/blob/main/deploy.sh) для упращения развертывания всех выше перечисленных компонентов.
+2. Подготовлен [манифест](https://github.com/Sem20071/my-mini-app/blob/main/grafana-config.yaml) для внесения изменений в конфигурациию мониторинг кластера. При разворачивании воспользовался пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus)
+3. Подготовлен [bash скрипт](https://github.com/Sem20071/my-mini-app/blob/main/deploy.sh) для упрощения развертывания всех выше перечисленных компонентов.
 ![Результат выполнения скрипта deploy.sh](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-4-1.png)
 
 
 ## 5. Деплой инфраструктуры в terraform pipeline.
-Для деплоя инфраструктуры в terraform pipeline я выбрал GitHub Action т.к. ранее ужа работал с ним и по моему мненю он достаточно удобен. На этом этапе были внесены изменения в основнаю Terraform конфигурацию:
+Для деплоя инфраструктуры в terraform pipeline я выбрал GitHub Action т.к. ранее ужа работал с ним и по моему мнению он достаточно удобен. На этом этапе были внесены изменения в основную Terraform конфигурацию:
 1. Все чувствительные даннеы были вынесены в переменные окружения и добавлены в GitHub Actions secrets and variables.
 2. Добавлен код для создания:
    * Application Load Balancer и роутера в YC. Это необходимо для организации доступа к тестовому приложению и интерфейсу Grafana через 80 порт.
    * Целевой группы хостов.
    * backend group для тестового приложения и Grafana с healthcheck
    * Виртуального хоста для настройки маршрутизации.
-3. Создани [GitHub Action Workflow](https://github.com/Sem20071/netology_final_project/blob/main/.github/workflows/terraform-deployment.yml)
+3. Создан [GitHub Action Workflow](https://github.com/Sem20071/netology_final_project/blob/main/.github/workflows/terraform-deployment.yml)
    
 Пушим изменения ветку main проекта и проверяем.
 ![Результат выполнения git push](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-1.png)
@@ -89,9 +89,9 @@
 ![Проверяем как отработал созданный workflow. 2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-4.png)
 ![Проверяем DockerHub регистри, видим что новый образ с тэгом v1.0.1 а так же тот же образ но с тэго latest загружены](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-5.png)
 ![Открываем нашу тестовую страницу и видим изменения](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-6.png)
-[Проверяем версию образа в деплоймент и видим что версия изменена на v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-7.png)
+[Проверяем версию образа в deployment и видим что версия изменена на v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-7.png)
 
-# Результат ввыполнения дипломной работы.
+# Результат выполнения дипломной работы.
 1. [Репозиторий с конфигурационными файлами Terraform](https://github.com/Sem20071/netology_final_project)
 2. [Terraform pipeline](https://github.com/Sem20071/netology_final_project/blob/main/.github/workflows/terraform-deployment.yml)
 3. [Репозиторий с конфигурацией ansible для настройки кластера k8s](https://github.com/Sem20071/netology_final_project/tree/main/2_main/ansible-config-k8s-cluster)
