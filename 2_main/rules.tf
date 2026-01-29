@@ -51,4 +51,12 @@ resource "yandex_vpc_security_group" "public" {
     v4_cidr_blocks = ["0.0.0.0/0"]
     description    = "outgoing traffic"
   }
+
+  # ingress {
+  #   protocol       = "ANY"
+  #   from_port      = 0
+  #   to_port        = 65535
+  #   v4_cidr_blocks = ["0.0.0.0/0"]
+  #   description    = "test rules traffic"
+  # }
 }
