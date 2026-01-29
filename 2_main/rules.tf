@@ -58,5 +58,5 @@ resource "yandex_vpc_security_group" "public" {
   #   to_port        = 65535
   #   v4_cidr_blocks = ["0.0.0.0/0"]
   #   description    = "test rules traffic"
-  # }
+  # } 
 }
