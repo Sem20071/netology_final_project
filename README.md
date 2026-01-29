@@ -31,6 +31,8 @@
 ![Результат выполнения terraform apply.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-1.png)
 ![Результат выполнения terraform apply.2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-2.png)
 ![Результат выполнения terraform apply.2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-3.png)
+
+Проверяем созданный кластер
 ![Результат выполнения kubectl get pods --all-namespaces](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-4.png)
 ![Результат выполнения kubectl get nodes](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-2-5.png)
 
@@ -64,31 +66,40 @@
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-2.png)
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-3.png)
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-4.png)
+
 Забираем конфиг файл и артифактов.
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-5.png)
+
 Проверяем состояние развернутого кластера
 ![Результат выполнения ](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-5.png)
-Разворачиваем в кластере k8s тестовое приложение и мониторинг.
-Проверяем доступность тестового приложения.
-![Доступность тестовой страницы на 80 порту](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-6.png)
 
-Проверяем доступность grafana.
-![Доступность grafana на 80 порту](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-7.png)
-![Дашборд](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-8.png)
+#### Разворачиваем в кластере k8s тестовое приложение и мониторинг.
+
+[Доступность тестовой страницы на 80 порту](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-6.png)
+
+[Доступность grafana на 80 порту](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-7.png)
+
+[Дашборд grafana](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-8.png)
 
 [GitHub репозиторий с конфигурационными файлами для настройки Kubernetes](https://github.com/Sem20071/netology_final_project/tree/main/2_main)
 
 ## 6. Установка и настройка CI/CD.
 Для настройки CI/CD так же был выбран GitHub Action. Создан [GitHub workflow](https://github.com/Sem20071/my-mini-app/blob/main/.github/workflows/deploy-app.yml).
 Проверяем версию образа в deployment
-![Результат выполнения kubectl describe deployments.apps my-mini-app](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-1.png)
 
-![Пушим изменения, в ветку main, с тэгом v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-2.png)
+[Результат выполнения kubectl describe deployments.apps my-mini-app](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-1.png)
 
-![Проверяем как отработал созданный workflow. 1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-3.png)
-![Проверяем как отработал созданный workflow. 2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-4.png)
-![Проверяем DockerHub регистри, видим что новый образ с тэгом v1.0.1 а так же тот же образ но с тэго latest загружены](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-5.png)
-![Открываем нашу тестовую страницу и видим изменения](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-6.png)
+[Пушим изменения, в ветку main, с тэгом v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-2.png)
+
+
+[Проверяем как отработал созданный workflow. 1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-3.png)
+
+[Проверяем как отработал созданный workflow. 2](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-4.png)
+
+[Проверяем DockerHub регистри, видим что новый образ с тэгом v1.0.1 а так же тот же образ но с тэго latest загружены](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-5.png)
+
+[Открываем нашу тестовую страницу и видим изменения](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-6.png)
+
 [Проверяем версию образа в deployment и видим что версия изменена на v1.0.1](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-6-7.png)
 
 # Результат выполнения дипломной работы.
@@ -99,12 +110,3 @@
 5. [Репозиторий с конфигурацией Kubernetes кластера](https://github.com/Sem20071/netology_final_project/tree/main/2_main)
 6. [Ссылка на тестовое приложение]() и [веб интерфейс Grafana с данными доступа]()
 7. Все репозитории с исходниками распологаются в GitHub
-
-
-
-
-
-
-
-
-   
