@@ -24,7 +24,7 @@
 ## 2. Создание Kubernetes кластера.
 1. Для создания kubernetes кластера был выбран вариант с созданием виртуальных машин Compute Cloud и их настройкой при помощи Ansible. Была подготовлена [terraform конфигурация](https://github.com/Sem20071/netology_final_project/tree/main/2_main) и [ansible-playbook](https://github.com/Sem20071/netology_final_project/tree/main/2_main/ansible-config-k8s-cluster). Настройку k8s кластера реализовал при помощи инструментов Ansible + RKE2. 
 2. После запуска terraform конфигурации создаются сл. компоненты:
-* Настраиваться сетевая инфраструктура. Создаются сеть и подсети.
+* Настраиватся сетевая инфраструктура. Создаются сеть и подсети.
 * Создаётся требуемое количество виртуальных машин.
 * Производится настройка виртуальных машин согласно [cloud-init конфигурации](https://github.com/Sem20071/netology_final_project/blob/main/2_main/cloud-init.yml)
 * При помощи Ansible настраивается kubernetes на всех машинах кластера.
@@ -65,10 +65,9 @@
 ![Результат выполнения git push](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-1.png)
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-2.png)
 ![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-3.png)
-![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-4.png)
 
-Забираем конфиг файл и артифактов.
-![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-5.png)
+Забираем конфиг файл из артифактов.
+![выполнение GitHub Action](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-4.png)
 
 Проверяем состояние развернутого кластера
 ![Результат выполнения ](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-5.png)
