@@ -81,7 +81,8 @@
 Дашборд grafana
 ![Дашборд grafana](https://github.com/Sem20071/netology_final_project/blob/main/images/Diplom-AleksandrovSP-5-8.png)
 GitHub репозиторий с конфигурационными файлами для настройки Kubernetes
-![GitHub репозиторий с конфигурационными файлами для настройки Kubernetes](https://github.com/Sem20071/netology_final_project/tree/main/2_main)
+
+[GitHub репозиторий с конфигурационными файлами для настройки Kubernetes](https://github.com/Sem20071/netology_final_project/tree/main/2_main)
 
 ## 6. Установка и настройка CI/CD.
 Для настройки CI/CD так же был выбран GitHub Action. Создан [GitHub workflow](https://github.com/Sem20071/my-mini-app/blob/main/.github/workflows/deploy-app.yml).
